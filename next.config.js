@@ -1,1 +1,3 @@
-// Configurações Next.js (placeholder)
+module.exports = {
+  reactStrictMode: true
+};
