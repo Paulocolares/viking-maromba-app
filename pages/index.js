@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
@@ -7,15 +7,6 @@ import {
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  Timestamp
-} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDNoeQgidtMFrIkmF2x0RomyPBMqmTfrD4",
@@ -29,28 +20,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
-
-const treinosSemana = {
-  0: "Descanso",
-  1: "Peito + Tríceps",
-  2: "Costas + Bíceps",
-  3: "Perna",
-  4: "Ombro + Abdômen",
-  5: "Posterior + Glúteos",
-  6: "Cardio leve / Core"
-};
 
 export default function Home() {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
-  const [concluido, setConcluido] = useState(false);
-  const [hoje] = useState(new Date());
-
-  const diaSemana = hoje.getDay();
-  const treinoDoDia = treinosSemana[diaSemana];
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, setUser);
@@ -65,53 +40,46 @@ export default function Home() {
 
   const sair = () => signOut(auth);
 
-  const salvarTreino = async () => {
-    if (!user) return;
-    try {
-      const docRef = await addDoc(collection(db, "treinos"), {
-        uid: user.uid,
-        treino: treinoDoDia,
-        data: Timestamp.fromDate(hoje),
-      });
-      setConcluido(true);
-    } catch (err) {
-      console.error("Erro ao salvar treino:", err);
-    }
-  };
-
   if (!user) {
     return (
-      <div style={{ padding: 20 }}>
-        <h2>Login Viking Maromba</h2>
+      <div className="bg-black min-h-screen flex flex-col items-center justify-center text-green-400 font-sans">
+        <img src="/logo.png" alt="Viking Maromba" className="w-32 mb-6 animate-bounce" />
+        <h1 className="text-3xl font-bold mb-4">Viking Maromba</h1>
         <input
+          className="bg-gray-800 text-white px-4 py-2 mb-3 rounded w-64"
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        /><br /><br />
+        />
         <input
+          className="bg-gray-800 text-white px-4 py-2 mb-3 rounded w-64"
           type="password"
           placeholder="Senha"
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
-        /><br /><br />
-        <button onClick={entrar}>Entrar</button>
-        {erro && <p style={{ color: 'red' }}>{erro}</p>}
+        />
+        <button
+          className="bg-green-400 text-black font-bold px-6 py-2 rounded hover:bg-green-300"
+          onClick={entrar}
+        >
+          Entrar
+        </button>
+        {erro && <p className="text-red-400 mt-4">{erro}</p>}
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Olá, {user.email}</h2>
-      <p>Treino de hoje ({["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][diaSemana]}): <strong>{treinoDoDia}</strong></p>
-      {!concluido ? (
-        <button onClick={salvarTreino}>✅ Marcar como concluído</button>
-      ) : (
-        <p style={{ color: "green" }}>✔ Treino marcado como concluído!</p>
-      )}
-      <br /><br />
-      <button onClick={sair}>Sair</button>
+    <div className="bg-black text-green-400 min-h-screen flex flex-col items-center justify-center font-sans">
+      <h2 className="text-2xl mb-4">Bem-vindo, {user.email}</h2>
+      <p className="mb-4">Área de treino e histórico virão a seguir...</p>
+      <button
+        className="bg-green-400 text-black font-bold px-6 py-2 rounded hover:bg-green-300"
+        onClick={sair}
+      >
+        Sair
+      </button>
     </div>
   );
 }
