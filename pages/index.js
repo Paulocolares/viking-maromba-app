@@ -9,12 +9,13 @@ import {
 } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "FAKE_API_KEY",
+  apiKey: "AIzaSyDNoeQgidtMFrIkmF2x0RomyPBMqmTfrD4",
   authDomain: "viking-maromba.firebaseapp.com",
   projectId: "viking-maromba",
-  storageBucket: "viking-maromba.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123"
+  storageBucket: "viking-maromba.firebasestorage.app",
+  messagingSenderId: "196808951505",
+  appId: "1:196808951505:web:8c8dd4b3f7c1155c1727f0",
+  measurementId: "G-YVZP02NH5V"
 };
 
 const app = initializeApp(firebaseConfig);
